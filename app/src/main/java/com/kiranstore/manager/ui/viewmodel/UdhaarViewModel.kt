@@ -94,7 +94,10 @@ data class UdhaarDetailState(
     val customer: CustomerEntity? = null,
     val debts: List<DebtEntity> = emptyList(),
     val payments: List<DebtPaymentEntity> = emptyList(),
-    val balance: Double = 0.0
+    val balance: Double = 0.0,
+    val isAddDebtDialogOpen: Boolean = false,
+    val isAddPaymentDialogOpen: Boolean = false,
+    val error: String = ""
 )
 
 @HiltViewModel
@@ -106,7 +109,10 @@ class UdhaarDetailViewModel @Inject constructor(
     private val _state = MutableStateFlow(UdhaarDetailState())
     val state: StateFlow<UdhaarDetailState> = _state.asStateFlow()
 
+    private var customerId: Long = 0L
+
     fun init(customerId: Long) {
+        this.customerId = customerId
         viewModelScope.launch {
             _state.update { it.copy(customer = customerRepo.getById(customerId)) }
             launch { debtRepo.getDebtsByCustomer(customerId).collect { debts -> _state.update { it.copy(debts = debts) } } }
@@ -117,7 +123,24 @@ class UdhaarDetailViewModel @Inject constructor(
 
     fun markAsPaid(debtId: Long) = viewModelScope.launch { debtRepo.markAsPaid(debtId) }
 
-    fun addPayment(customerId: Long, shopId: Long, amount: Double) = viewModelScope.launch {
-        debtRepo.addPayment(DebtPaymentEntity(customerId = customerId, shopId = shopId, amount = amount))
+    fun addDebt(itemName: String, amount: Double, notes: String) {
+        val shopId = _state.value.customer?.shopId ?: 0L
+        viewModelScope.launch {
+            debtRepo.addDebt(DebtEntity(customerId = customerId, shopId = shopId, itemName = itemName, amount = amount, notes = notes))
+            closeAddDebtDialog()
+        }
     }
+
+    fun addPayment(amount: Double) {
+        val shopId = _state.value.customer?.shopId ?: 0L
+        viewModelScope.launch {
+            debtRepo.addPayment(DebtPaymentEntity(customerId = customerId, shopId = shopId, amount = amount))
+            closeAddPaymentDialog()
+        }
+    }
+
+    fun openAddDebtDialog() = _state.update { it.copy(isAddDebtDialogOpen = true) }
+    fun closeAddDebtDialog() = _state.update { it.copy(isAddDebtDialogOpen = false) }
+    fun openAddPaymentDialog() = _state.update { it.copy(isAddPaymentDialogOpen = true) }
+    fun closeAddPaymentDialog() = _state.update { it.copy(isAddPaymentDialogOpen = false) }
 }

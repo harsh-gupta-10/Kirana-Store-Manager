@@ -14,6 +14,7 @@ import androidx.room.util.CursorUtil;
 import androidx.room.util.DBUtil;
 import androidx.sqlite.db.SupportSQLiteStatement;
 import com.kiranstore.manager.data.database.entities.RentalEntity;
+import com.kiranstore.manager.data.database.entities.RentalMachineEntity;
 import java.lang.Class;
 import java.lang.Double;
 import java.lang.Exception;
@@ -37,9 +38,15 @@ import kotlinx.coroutines.flow.Flow;
 public final class RentalDao_Impl implements RentalDao {
   private final RoomDatabase __db;
 
+  private final EntityInsertionAdapter<RentalMachineEntity> __insertionAdapterOfRentalMachineEntity;
+
   private final EntityInsertionAdapter<RentalEntity> __insertionAdapterOfRentalEntity;
 
+  private final EntityDeletionOrUpdateAdapter<RentalMachineEntity> __deletionAdapterOfRentalMachineEntity;
+
   private final EntityDeletionOrUpdateAdapter<RentalEntity> __deletionAdapterOfRentalEntity;
+
+  private final EntityDeletionOrUpdateAdapter<RentalMachineEntity> __updateAdapterOfRentalMachineEntity;
 
   private final EntityDeletionOrUpdateAdapter<RentalEntity> __updateAdapterOfRentalEntity;
 
@@ -47,6 +54,23 @@ public final class RentalDao_Impl implements RentalDao {
 
   public RentalDao_Impl(@NonNull final RoomDatabase __db) {
     this.__db = __db;
+    this.__insertionAdapterOfRentalMachineEntity = new EntityInsertionAdapter<RentalMachineEntity>(__db) {
+      @Override
+      @NonNull
+      protected String createQuery() {
+        return "INSERT OR REPLACE INTO `rental_machines` (`id`,`shopId`,`machineName`,`rentPrice`,`deposit`) VALUES (nullif(?, 0),?,?,?,?)";
+      }
+
+      @Override
+      protected void bind(@NonNull final SupportSQLiteStatement statement,
+          @NonNull final RentalMachineEntity entity) {
+        statement.bindLong(1, entity.getId());
+        statement.bindLong(2, entity.getShopId());
+        statement.bindString(3, entity.getMachineName());
+        statement.bindDouble(4, entity.getRentPrice());
+        statement.bindDouble(5, entity.getDeposit());
+      }
+    };
     this.__insertionAdapterOfRentalEntity = new EntityInsertionAdapter<RentalEntity>(__db) {
       @Override
       @NonNull
@@ -72,6 +96,19 @@ public final class RentalDao_Impl implements RentalDao {
         statement.bindString(9, entity.getStatus());
       }
     };
+    this.__deletionAdapterOfRentalMachineEntity = new EntityDeletionOrUpdateAdapter<RentalMachineEntity>(__db) {
+      @Override
+      @NonNull
+      protected String createQuery() {
+        return "DELETE FROM `rental_machines` WHERE `id` = ?";
+      }
+
+      @Override
+      protected void bind(@NonNull final SupportSQLiteStatement statement,
+          @NonNull final RentalMachineEntity entity) {
+        statement.bindLong(1, entity.getId());
+      }
+    };
     this.__deletionAdapterOfRentalEntity = new EntityDeletionOrUpdateAdapter<RentalEntity>(__db) {
       @Override
       @NonNull
@@ -83,6 +120,24 @@ public final class RentalDao_Impl implements RentalDao {
       protected void bind(@NonNull final SupportSQLiteStatement statement,
           @NonNull final RentalEntity entity) {
         statement.bindLong(1, entity.getId());
+      }
+    };
+    this.__updateAdapterOfRentalMachineEntity = new EntityDeletionOrUpdateAdapter<RentalMachineEntity>(__db) {
+      @Override
+      @NonNull
+      protected String createQuery() {
+        return "UPDATE OR ABORT `rental_machines` SET `id` = ?,`shopId` = ?,`machineName` = ?,`rentPrice` = ?,`deposit` = ? WHERE `id` = ?";
+      }
+
+      @Override
+      protected void bind(@NonNull final SupportSQLiteStatement statement,
+          @NonNull final RentalMachineEntity entity) {
+        statement.bindLong(1, entity.getId());
+        statement.bindLong(2, entity.getShopId());
+        statement.bindString(3, entity.getMachineName());
+        statement.bindDouble(4, entity.getRentPrice());
+        statement.bindDouble(5, entity.getDeposit());
+        statement.bindLong(6, entity.getId());
       }
     };
     this.__updateAdapterOfRentalEntity = new EntityDeletionOrUpdateAdapter<RentalEntity>(__db) {
@@ -122,6 +177,25 @@ public final class RentalDao_Impl implements RentalDao {
   }
 
   @Override
+  public Object insertMachine(final RentalMachineEntity machine,
+      final Continuation<? super Long> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
+      @Override
+      @NonNull
+      public Long call() throws Exception {
+        __db.beginTransaction();
+        try {
+          final Long _result = __insertionAdapterOfRentalMachineEntity.insertAndReturnId(machine);
+          __db.setTransactionSuccessful();
+          return _result;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
   public Object insertRental(final RentalEntity rental,
       final Continuation<? super Long> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
@@ -141,6 +215,25 @@ public final class RentalDao_Impl implements RentalDao {
   }
 
   @Override
+  public Object deleteMachine(final RentalMachineEntity machine,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        __db.beginTransaction();
+        try {
+          __deletionAdapterOfRentalMachineEntity.handle(machine);
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
   public Object deleteRental(final RentalEntity rental,
       final Continuation<? super Unit> $completion) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
@@ -150,6 +243,25 @@ public final class RentalDao_Impl implements RentalDao {
         __db.beginTransaction();
         try {
           __deletionAdapterOfRentalEntity.handle(rental);
+          __db.setTransactionSuccessful();
+          return Unit.INSTANCE;
+        } finally {
+          __db.endTransaction();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object updateMachine(final RentalMachineEntity machine,
+      final Continuation<? super Unit> $completion) {
+    return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
+      @Override
+      @NonNull
+      public Unit call() throws Exception {
+        __db.beginTransaction();
+        try {
+          __updateAdapterOfRentalMachineEntity.handle(machine);
           __db.setTransactionSuccessful();
           return Unit.INSTANCE;
         } finally {
@@ -210,6 +322,52 @@ public final class RentalDao_Impl implements RentalDao {
         }
       }
     }, $completion);
+  }
+
+  @Override
+  public Flow<List<RentalMachineEntity>> getAllMachines(final long shopId) {
+    final String _sql = "SELECT * FROM rental_machines WHERE shopId = ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, shopId);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"rental_machines"}, new Callable<List<RentalMachineEntity>>() {
+      @Override
+      @NonNull
+      public List<RentalMachineEntity> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfShopId = CursorUtil.getColumnIndexOrThrow(_cursor, "shopId");
+          final int _cursorIndexOfMachineName = CursorUtil.getColumnIndexOrThrow(_cursor, "machineName");
+          final int _cursorIndexOfRentPrice = CursorUtil.getColumnIndexOrThrow(_cursor, "rentPrice");
+          final int _cursorIndexOfDeposit = CursorUtil.getColumnIndexOrThrow(_cursor, "deposit");
+          final List<RentalMachineEntity> _result = new ArrayList<RentalMachineEntity>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final RentalMachineEntity _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpShopId;
+            _tmpShopId = _cursor.getLong(_cursorIndexOfShopId);
+            final String _tmpMachineName;
+            _tmpMachineName = _cursor.getString(_cursorIndexOfMachineName);
+            final double _tmpRentPrice;
+            _tmpRentPrice = _cursor.getDouble(_cursorIndexOfRentPrice);
+            final double _tmpDeposit;
+            _tmpDeposit = _cursor.getDouble(_cursorIndexOfDeposit);
+            _item = new RentalMachineEntity(_tmpId,_tmpShopId,_tmpMachineName,_tmpRentPrice,_tmpDeposit);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
   }
 
   @Override

@@ -80,6 +80,12 @@ class DebtRepository @Inject constructor(private val debtDao: DebtDao) {
     fun searchDebts(shopId: Long, query: String): Flow<List<DebtEntity>> =
         debtDao.searchDebtsByCustomerName(shopId, query)
 
+    fun getRecentDebts(shopId: Long, limit: Int = 5): Flow<List<DebtEntity>> =
+        debtDao.getRecentDebts(shopId, limit)
+
+    fun getRecentPayments(shopId: Long, limit: Int = 5): Flow<List<DebtPaymentEntity>> =
+        debtDao.getRecentPayments(shopId, limit)
+
     suspend fun addDebt(debt: DebtEntity): Long =
         debtDao.insertDebt(debt)
 
@@ -110,6 +116,12 @@ class RentalRepository @Inject constructor(private val rentalDao: RentalDao) {
 
     fun getTotalDepositsHeld(shopId: Long): Flow<Double?> =
         rentalDao.getTotalDepositsHeld(shopId)
+
+    fun getAllMachines(shopId: Long): Flow<List<RentalMachineEntity>> =
+        rentalDao.getAllMachines(shopId)
+
+    suspend fun addMachine(machine: RentalMachineEntity): Long =
+        rentalDao.insertMachine(machine)
 
     suspend fun addRental(rental: RentalEntity): Long =
         rentalDao.insertRental(rental)

@@ -175,6 +175,3 @@ fun SettingsRow(icon: ImageVector, title: String, subtitle: String = "", onClick
     }
     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
 }
-
-private fun Modifier.clip(shape: androidx.compose.ui.graphics.Shape) =
-    this.then(androidx.compose.ui.draw.clip(shape))

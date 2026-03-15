@@ -24,10 +24,10 @@ interface DebtDao {
     @Query("SELECT * FROM debts WHERE customerId = :customerId ORDER BY date DESC")
     fun getDebtsByCustomer(customerId: Long): Flow<List<DebtEntity>>
 
-    @Query("SELECT SUM(amount) FROM debts WHERE shopId = :shopId AND status = 'PENDING'")
+    @Query("SELECT (SELECT IFNULL(SUM(amount), 0) FROM debts WHERE shopId = :shopId AND status = 'PENDING') - (SELECT IFNULL(SUM(amount), 0) FROM debt_payments WHERE shopId = :shopId)")
     fun getTotalOutstanding(shopId: Long): Flow<Double?>
 
-    @Query("SELECT SUM(amount) FROM debts WHERE customerId = :customerId AND status = 'PENDING'")
+    @Query("SELECT (SELECT IFNULL(SUM(amount), 0) FROM debts WHERE customerId = :customerId AND status = 'PENDING') - (SELECT IFNULL(SUM(amount), 0) FROM debt_payments WHERE customerId = :customerId)")
     fun getCustomerBalance(customerId: Long): Flow<Double?>
 
     @Query("UPDATE debts SET status = 'PAID' WHERE id = :debtId")
@@ -41,12 +41,18 @@ interface DebtDao {
     """)
     fun searchDebtsByCustomerName(shopId: Long, query: String): Flow<List<DebtEntity>>
 
+    @Query("SELECT * FROM debts WHERE shopId = :shopId ORDER BY date DESC LIMIT :limit")
+    fun getRecentDebts(shopId: Long, limit: Int = 5): Flow<List<DebtEntity>>
+
     // ── Payments ───────────────────────────────────────────
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPayment(payment: DebtPaymentEntity): Long
 
     @Query("SELECT * FROM debt_payments WHERE customerId = :customerId ORDER BY date DESC")
     fun getPaymentsByCustomer(customerId: Long): Flow<List<DebtPaymentEntity>>
+
+    @Query("SELECT * FROM debt_payments WHERE shopId = :shopId ORDER BY date DESC LIMIT :limit")
+    fun getRecentPayments(shopId: Long, limit: Int = 5): Flow<List<DebtPaymentEntity>>
 
     @Query("SELECT SUM(amount) FROM debt_payments WHERE customerId = :customerId")
     fun getTotalPayments(customerId: Long): Flow<Double?>

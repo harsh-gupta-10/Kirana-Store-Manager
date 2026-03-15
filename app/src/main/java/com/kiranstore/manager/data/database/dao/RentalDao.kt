@@ -2,11 +2,26 @@ package com.kiranstore.manager.data.database.dao
 
 import androidx.room.*
 import com.kiranstore.manager.data.database.entities.RentalEntity
+import com.kiranstore.manager.data.database.entities.RentalMachineEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RentalDao {
 
+    // ── Rental Machines ────────────────────────────────────
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMachine(machine: RentalMachineEntity): Long
+
+    @Update
+    suspend fun updateMachine(machine: RentalMachineEntity)
+
+    @Delete
+    suspend fun deleteMachine(machine: RentalMachineEntity)
+
+    @Query("SELECT * FROM rental_machines WHERE shopId = :shopId")
+    fun getAllMachines(shopId: Long): Flow<List<RentalMachineEntity>>
+
+    // ── Rentals ───────────────────────────────────────────
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRental(rental: RentalEntity): Long
 

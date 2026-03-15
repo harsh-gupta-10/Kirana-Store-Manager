@@ -18,10 +18,11 @@ import kotlinx.coroutines.launch
         DebtEntity::class,
         DebtPaymentEntity::class,
         RentalEntity::class,
+        RentalMachineEntity::class,
         BuyListItemEntity::class,
         TaskEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class KiranDatabase : RoomDatabase() {

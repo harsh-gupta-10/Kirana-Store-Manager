@@ -2,6 +2,7 @@ package com.kiranstore.manager.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kiranstore.manager.data.database.entities.*
 import com.kiranstore.manager.data.repository.*
 import com.kiranstore.manager.utils.todayEndMs
 import com.kiranstore.manager.utils.todayStartMs
@@ -21,7 +22,7 @@ data class HomeUiState(
 )
 
 data class RecentUdhaarItem(
-    val customerId: Long,
+    val id: Long,
     val customerName: String,
     val amount: Double,
     val timeAgo: String,
@@ -57,17 +58,40 @@ class HomeViewModel @Inject constructor(
     private fun collectDashboardData(shopId: Long) {
         val start = todayStartMs(); val end = todayEndMs()
         viewModelScope.launch {
+            val totalOutstandingFlow = debtRepo.getTotalOutstanding(shopId)
+            val activeRentalsFlow = rentalRepo.getActiveRentalCount(shopId)
+            val tasksTodayFlow = taskRepo.getTodayPendingCount(shopId, start, end)
+            val buyListCountFlow = buyListRepo.getPendingCount(shopId)
+            val recentDebtsFlow = debtRepo.getRecentDebts(shopId, 5)
+            val recentPaymentsFlow = debtRepo.getRecentPayments(shopId, 5)
+
             combine(
-                debtRepo.getTotalOutstanding(shopId),
-                rentalRepo.getActiveRentalCount(shopId),
-                taskRepo.getTodayPendingCount(shopId, start, end),
-                buyListRepo.getPendingCount(shopId)
-            ) { udhaar, rentals, tasks, buys ->
+                totalOutstandingFlow,
+                activeRentalsFlow,
+                tasksTodayFlow,
+                buyListCountFlow,
+                recentDebtsFlow,
+                recentPaymentsFlow
+            ) { args: Array<Any?> ->
+                val udhaar = args[0] as? Double ?: 0.0
+                val rentals = args[1] as? Int ?: 0
+                val tasks = args[2] as? Int ?: 0
+                val buys = args[3] as? Int ?: 0
+                val recentDebts = args[4] as? List<DebtEntity> ?: emptyList()
+                val recentPayments = args[5] as? List<DebtPaymentEntity> ?: emptyList()
+
+                val combinedRecent = (recentDebts.map { 
+                    RecentUdhaarItem(it.id, "Customer ${it.customerId}", it.amount, "Recent", true) 
+                } + recentPayments.map { 
+                    RecentUdhaarItem(it.id, "Customer ${it.customerId}", it.amount, "Recent", false) 
+                }).sortedByDescending { it.id }.take(5)
+
                 _state.update { it.copy(
-                    totalUdhaar = udhaar ?: 0.0,
+                    totalUdhaar = udhaar,
                     activeRentals = rentals,
                     tasksToday = tasks,
-                    buyListCount = buys
+                    buyListCount = buys,
+                    recentUdhaarItems = combinedRecent
                 )}
             }.collect()
         }

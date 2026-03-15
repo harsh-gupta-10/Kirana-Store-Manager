@@ -340,11 +340,14 @@ public final class DebtDao_Impl implements DebtDao {
 
   @Override
   public Flow<Double> getTotalOutstanding(final long shopId) {
-    final String _sql = "SELECT SUM(amount) FROM debts WHERE shopId = ? AND status = 'PENDING'";
-    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    final String _sql = "SELECT (SELECT IFNULL(SUM(amount), 0) FROM debts WHERE shopId = ? AND status = 'PENDING') - (SELECT IFNULL(SUM(amount), 0) FROM debt_payments WHERE shopId = ?)";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
     int _argIndex = 1;
     _statement.bindLong(_argIndex, shopId);
-    return CoroutinesRoom.createFlow(__db, false, new String[] {"debts"}, new Callable<Double>() {
+    _argIndex = 2;
+    _statement.bindLong(_argIndex, shopId);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"debts",
+        "debt_payments"}, new Callable<Double>() {
       @Override
       @Nullable
       public Double call() throws Exception {
@@ -377,11 +380,14 @@ public final class DebtDao_Impl implements DebtDao {
 
   @Override
   public Flow<Double> getCustomerBalance(final long customerId) {
-    final String _sql = "SELECT SUM(amount) FROM debts WHERE customerId = ? AND status = 'PENDING'";
-    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
+    final String _sql = "SELECT (SELECT IFNULL(SUM(amount), 0) FROM debts WHERE customerId = ? AND status = 'PENDING') - (SELECT IFNULL(SUM(amount), 0) FROM debt_payments WHERE customerId = ?)";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
     int _argIndex = 1;
     _statement.bindLong(_argIndex, customerId);
-    return CoroutinesRoom.createFlow(__db, false, new String[] {"debts"}, new Callable<Double>() {
+    _argIndex = 2;
+    _statement.bindLong(_argIndex, customerId);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"debts",
+        "debt_payments"}, new Callable<Double>() {
       @Override
       @Nullable
       public Double call() throws Exception {
@@ -476,11 +482,119 @@ public final class DebtDao_Impl implements DebtDao {
   }
 
   @Override
+  public Flow<List<DebtEntity>> getRecentDebts(final long shopId, final int limit) {
+    final String _sql = "SELECT * FROM debts WHERE shopId = ? ORDER BY date DESC LIMIT ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, shopId);
+    _argIndex = 2;
+    _statement.bindLong(_argIndex, limit);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"debts"}, new Callable<List<DebtEntity>>() {
+      @Override
+      @NonNull
+      public List<DebtEntity> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfCustomerId = CursorUtil.getColumnIndexOrThrow(_cursor, "customerId");
+          final int _cursorIndexOfShopId = CursorUtil.getColumnIndexOrThrow(_cursor, "shopId");
+          final int _cursorIndexOfItemName = CursorUtil.getColumnIndexOrThrow(_cursor, "itemName");
+          final int _cursorIndexOfAmount = CursorUtil.getColumnIndexOrThrow(_cursor, "amount");
+          final int _cursorIndexOfDate = CursorUtil.getColumnIndexOrThrow(_cursor, "date");
+          final int _cursorIndexOfNotes = CursorUtil.getColumnIndexOrThrow(_cursor, "notes");
+          final int _cursorIndexOfStatus = CursorUtil.getColumnIndexOrThrow(_cursor, "status");
+          final List<DebtEntity> _result = new ArrayList<DebtEntity>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final DebtEntity _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpCustomerId;
+            _tmpCustomerId = _cursor.getLong(_cursorIndexOfCustomerId);
+            final long _tmpShopId;
+            _tmpShopId = _cursor.getLong(_cursorIndexOfShopId);
+            final String _tmpItemName;
+            _tmpItemName = _cursor.getString(_cursorIndexOfItemName);
+            final double _tmpAmount;
+            _tmpAmount = _cursor.getDouble(_cursorIndexOfAmount);
+            final long _tmpDate;
+            _tmpDate = _cursor.getLong(_cursorIndexOfDate);
+            final String _tmpNotes;
+            _tmpNotes = _cursor.getString(_cursorIndexOfNotes);
+            final String _tmpStatus;
+            _tmpStatus = _cursor.getString(_cursorIndexOfStatus);
+            _item = new DebtEntity(_tmpId,_tmpCustomerId,_tmpShopId,_tmpItemName,_tmpAmount,_tmpDate,_tmpNotes,_tmpStatus);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
+  @Override
   public Flow<List<DebtPaymentEntity>> getPaymentsByCustomer(final long customerId) {
     final String _sql = "SELECT * FROM debt_payments WHERE customerId = ? ORDER BY date DESC";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
     _statement.bindLong(_argIndex, customerId);
+    return CoroutinesRoom.createFlow(__db, false, new String[] {"debt_payments"}, new Callable<List<DebtPaymentEntity>>() {
+      @Override
+      @NonNull
+      public List<DebtPaymentEntity> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfCustomerId = CursorUtil.getColumnIndexOrThrow(_cursor, "customerId");
+          final int _cursorIndexOfShopId = CursorUtil.getColumnIndexOrThrow(_cursor, "shopId");
+          final int _cursorIndexOfAmount = CursorUtil.getColumnIndexOrThrow(_cursor, "amount");
+          final int _cursorIndexOfDate = CursorUtil.getColumnIndexOrThrow(_cursor, "date");
+          final int _cursorIndexOfNotes = CursorUtil.getColumnIndexOrThrow(_cursor, "notes");
+          final List<DebtPaymentEntity> _result = new ArrayList<DebtPaymentEntity>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final DebtPaymentEntity _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpCustomerId;
+            _tmpCustomerId = _cursor.getLong(_cursorIndexOfCustomerId);
+            final long _tmpShopId;
+            _tmpShopId = _cursor.getLong(_cursorIndexOfShopId);
+            final double _tmpAmount;
+            _tmpAmount = _cursor.getDouble(_cursorIndexOfAmount);
+            final long _tmpDate;
+            _tmpDate = _cursor.getLong(_cursorIndexOfDate);
+            final String _tmpNotes;
+            _tmpNotes = _cursor.getString(_cursorIndexOfNotes);
+            _item = new DebtPaymentEntity(_tmpId,_tmpCustomerId,_tmpShopId,_tmpAmount,_tmpDate,_tmpNotes);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+        }
+      }
+
+      @Override
+      protected void finalize() {
+        _statement.release();
+      }
+    });
+  }
+
+  @Override
+  public Flow<List<DebtPaymentEntity>> getRecentPayments(final long shopId, final int limit) {
+    final String _sql = "SELECT * FROM debt_payments WHERE shopId = ? ORDER BY date DESC LIMIT ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, shopId);
+    _argIndex = 2;
+    _statement.bindLong(_argIndex, limit);
     return CoroutinesRoom.createFlow(__db, false, new String[] {"debt_payments"}, new Callable<List<DebtPaymentEntity>>() {
       @Override
       @NonNull

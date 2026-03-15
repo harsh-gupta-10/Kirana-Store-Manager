@@ -45,11 +45,11 @@ object AppModule {
 
     @Provides @Singleton
     fun provideGeminiService(): GeminiService = GeminiService()
-    @Provides @Singleton
-    fun provideSupabaseAuthService(): SupabaseAuthService = SupabaseAuthService()
+
     @Provides @Singleton
     fun provideSpeechService(@ApplicationContext ctx: Context): SpeechRecognitionService =
         SpeechRecognitionService(ctx)
+
     @Provides @Singleton
     fun provideContactsService(@ApplicationContext ctx: Context): ContactsService =
         ContactsService(ctx)

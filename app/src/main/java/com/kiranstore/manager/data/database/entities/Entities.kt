@@ -109,6 +109,27 @@ data class DebtPaymentEntity(
 )
 
 // ─────────────────────────────────────────────
+// RENTAL MACHINE
+// ─────────────────────────────────────────────
+@Entity(
+    tableName = "rental_machines",
+    foreignKeys = [ForeignKey(
+        entity = ShopEntity::class,
+        parentColumns = ["id"],
+        childColumns = ["shopId"],
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index("shopId")]
+)
+data class RentalMachineEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val shopId: Long,
+    val machineName: String,
+    val rentPrice: Double,
+    val deposit: Double
+)
+
+// ─────────────────────────────────────────────
 // RENTAL
 // ─────────────────────────────────────────────
 @Entity(

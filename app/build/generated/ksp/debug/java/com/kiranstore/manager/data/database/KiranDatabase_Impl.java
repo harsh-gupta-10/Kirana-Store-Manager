@@ -54,7 +54,7 @@ public final class KiranDatabase_Impl extends KiranDatabase {
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(1) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(2) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS `shops` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `shopName` TEXT NOT NULL, `ownerName` TEXT NOT NULL, `phone` TEXT NOT NULL, `address` TEXT NOT NULL, `logoUri` TEXT, `userId` TEXT NOT NULL, `createdAt` INTEGER NOT NULL)");
@@ -69,12 +69,14 @@ public final class KiranDatabase_Impl extends KiranDatabase {
         db.execSQL("CREATE TABLE IF NOT EXISTS `rentals` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `customerId` INTEGER NOT NULL, `shopId` INTEGER NOT NULL, `machineName` TEXT NOT NULL, `deposit` REAL NOT NULL, `rentAmount` REAL NOT NULL, `startDate` INTEGER NOT NULL, `returnDate` INTEGER, `status` TEXT NOT NULL, FOREIGN KEY(`customerId`) REFERENCES `customers`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`shopId`) REFERENCES `shops`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_rentals_customerId` ON `rentals` (`customerId`)");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_rentals_shopId` ON `rentals` (`shopId`)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `rental_machines` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `shopId` INTEGER NOT NULL, `machineName` TEXT NOT NULL, `rentPrice` REAL NOT NULL, `deposit` REAL NOT NULL, FOREIGN KEY(`shopId`) REFERENCES `shops`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_rental_machines_shopId` ON `rental_machines` (`shopId`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `buy_list_items` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `shopId` INTEGER NOT NULL, `name` TEXT NOT NULL, `quantity` TEXT NOT NULL, `priority` TEXT NOT NULL, `notes` TEXT NOT NULL, `isPurchased` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, FOREIGN KEY(`shopId`) REFERENCES `shops`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_buy_list_items_shopId` ON `buy_list_items` (`shopId`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `tasks` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `shopId` INTEGER NOT NULL, `name` TEXT NOT NULL, `date` INTEGER NOT NULL, `notes` TEXT NOT NULL, `status` TEXT NOT NULL, FOREIGN KEY(`shopId`) REFERENCES `shops`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         db.execSQL("CREATE INDEX IF NOT EXISTS `index_tasks_shopId` ON `tasks` (`shopId`)");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2e707f25c7c995253ef75efab5a8a88d')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5b86facb2bc1dc24e780e69fa90f61b6')");
       }
 
       @Override
@@ -84,6 +86,7 @@ public final class KiranDatabase_Impl extends KiranDatabase {
         db.execSQL("DROP TABLE IF EXISTS `debts`");
         db.execSQL("DROP TABLE IF EXISTS `debt_payments`");
         db.execSQL("DROP TABLE IF EXISTS `rentals`");
+        db.execSQL("DROP TABLE IF EXISTS `rental_machines`");
         db.execSQL("DROP TABLE IF EXISTS `buy_list_items`");
         db.execSQL("DROP TABLE IF EXISTS `tasks`");
         final List<? extends RoomDatabase.Callback> _callbacks = mCallbacks;
@@ -230,6 +233,23 @@ public final class KiranDatabase_Impl extends KiranDatabase {
                   + " Expected:\n" + _infoRentals + "\n"
                   + " Found:\n" + _existingRentals);
         }
+        final HashMap<String, TableInfo.Column> _columnsRentalMachines = new HashMap<String, TableInfo.Column>(5);
+        _columnsRentalMachines.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsRentalMachines.put("shopId", new TableInfo.Column("shopId", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsRentalMachines.put("machineName", new TableInfo.Column("machineName", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsRentalMachines.put("rentPrice", new TableInfo.Column("rentPrice", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsRentalMachines.put("deposit", new TableInfo.Column("deposit", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        final HashSet<TableInfo.ForeignKey> _foreignKeysRentalMachines = new HashSet<TableInfo.ForeignKey>(1);
+        _foreignKeysRentalMachines.add(new TableInfo.ForeignKey("shops", "CASCADE", "NO ACTION", Arrays.asList("shopId"), Arrays.asList("id")));
+        final HashSet<TableInfo.Index> _indicesRentalMachines = new HashSet<TableInfo.Index>(1);
+        _indicesRentalMachines.add(new TableInfo.Index("index_rental_machines_shopId", false, Arrays.asList("shopId"), Arrays.asList("ASC")));
+        final TableInfo _infoRentalMachines = new TableInfo("rental_machines", _columnsRentalMachines, _foreignKeysRentalMachines, _indicesRentalMachines);
+        final TableInfo _existingRentalMachines = TableInfo.read(db, "rental_machines");
+        if (!_infoRentalMachines.equals(_existingRentalMachines)) {
+          return new RoomOpenHelper.ValidationResult(false, "rental_machines(com.kiranstore.manager.data.database.entities.RentalMachineEntity).\n"
+                  + " Expected:\n" + _infoRentalMachines + "\n"
+                  + " Found:\n" + _existingRentalMachines);
+        }
         final HashMap<String, TableInfo.Column> _columnsBuyListItems = new HashMap<String, TableInfo.Column>(8);
         _columnsBuyListItems.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBuyListItems.put("shopId", new TableInfo.Column("shopId", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
@@ -270,7 +290,7 @@ public final class KiranDatabase_Impl extends KiranDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "2e707f25c7c995253ef75efab5a8a88d", "617219a8c84d1709a07e1545ceca5109");
+    }, "5b86facb2bc1dc24e780e69fa90f61b6", "8dd81fb9c08981be348a38e9c1bc6774");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;
@@ -281,7 +301,7 @@ public final class KiranDatabase_Impl extends KiranDatabase {
   protected InvalidationTracker createInvalidationTracker() {
     final HashMap<String, String> _shadowTablesMap = new HashMap<String, String>(0);
     final HashMap<String, Set<String>> _viewTables = new HashMap<String, Set<String>>(0);
-    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "shops","customers","debts","debt_payments","rentals","buy_list_items","tasks");
+    return new InvalidationTracker(this, _shadowTablesMap, _viewTables, "shops","customers","debts","debt_payments","rentals","rental_machines","buy_list_items","tasks");
   }
 
   @Override
@@ -302,6 +322,7 @@ public final class KiranDatabase_Impl extends KiranDatabase {
       _db.execSQL("DELETE FROM `debts`");
       _db.execSQL("DELETE FROM `debt_payments`");
       _db.execSQL("DELETE FROM `rentals`");
+      _db.execSQL("DELETE FROM `rental_machines`");
       _db.execSQL("DELETE FROM `buy_list_items`");
       _db.execSQL("DELETE FROM `tasks`");
       super.setTransactionSuccessful();

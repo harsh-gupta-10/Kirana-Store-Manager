@@ -29,15 +29,15 @@
 17-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:10:22-74
 18
 19    <permission
-19-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\3e6e512b9159cff7a52248391092fd19\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+19-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\ae2c7e25ccf1128a7d9fc9526ed5001d\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
 20        android:name="com.kiranstore.manager.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-20-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\3e6e512b9159cff7a52248391092fd19\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+20-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\ae2c7e25ccf1128a7d9fc9526ed5001d\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
 21        android:protectionLevel="signature" />
-21-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\3e6e512b9159cff7a52248391092fd19\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+21-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\ae2c7e25ccf1128a7d9fc9526ed5001d\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
 22
 23    <uses-permission android:name="com.kiranstore.manager.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-23-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\3e6e512b9159cff7a52248391092fd19\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
-23-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\3e6e512b9159cff7a52248391092fd19\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+23-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\ae2c7e25ccf1128a7d9fc9526ed5001d\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+23-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\ae2c7e25ccf1128a7d9fc9526ed5001d\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
 24
 25    <application
 25-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:12:5-45:19
@@ -46,7 +46,7 @@
 27        android:allowBackup="true"
 27-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:14:9-35
 28        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-28-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\3e6e512b9159cff7a52248391092fd19\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
+28-->[androidx.core:core:1.15.0] C:\Users\harsh\.gradle\caches\8.9\transforms\ae2c7e25ccf1128a7d9fc9526ed5001d\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
 29        android:debuggable="true"
 30        android:extractNativeLibs="false"
 31        android:hardwareAccelerated="true"
@@ -61,140 +61,141 @@
 35-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:17:9-54
 36        android:supportsRtl="true"
 36-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:18:9-35
-37        android:theme="@style/Theme.KiranStoreManager" >
-37-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:19:9-55
-38        <activity
-38-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:23:9-32:20
-39            android:name="com.kiranstore.manager.MainActivity"
-39-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:24:13-41
-40            android:exported="true"
-40-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:25:13-36
-41            android:theme="@style/Theme.KiranStoreManager.SplashScreen"
-41-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:27:13-72
-42            android:windowSoftInputMode="adjustResize" >
-42-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:26:13-55
-43            <intent-filter>
-43-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:28:13-31:29
-44                <action android:name="android.intent.action.MAIN" />
-44-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:29:17-69
-44-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:29:25-66
-45
-46                <category android:name="android.intent.category.LAUNCHER" />
-46-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:30:17-77
-46-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:30:27-74
-47            </intent-filter>
-48        </activity>
-49
-50        <!-- Contact Picker Provider -->
-51        <provider
-52            android:name="androidx.core.content.FileProvider"
-52-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:36:13-62
-53            android:authorities="com.kiranstore.manager.fileprovider"
-53-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:37:13-64
-54            android:exported="false"
-54-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:38:13-37
-55            android:grantUriPermissions="true" >
-55-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:39:13-47
-56            <meta-data
-56-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:40:13-42:54
-57                android:name="android.support.FILE_PROVIDER_PATHS"
-57-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:41:17-67
-58                android:resource="@xml/file_paths" />
-58-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:42:17-51
-59        </provider>
-60        <provider
-60-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\4366be9e0d91aa9240bfcc2b34e18072\transformed\auth-kt-debug\AndroidManifest.xml:9:9-17:20
-61            android:name="androidx.startup.InitializationProvider"
-61-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\4366be9e0d91aa9240bfcc2b34e18072\transformed\auth-kt-debug\AndroidManifest.xml:10:13-67
-62            android:authorities="com.kiranstore.manager.androidx-startup"
-62-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\4366be9e0d91aa9240bfcc2b34e18072\transformed\auth-kt-debug\AndroidManifest.xml:11:13-68
-63            android:exported="false" >
-63-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\4366be9e0d91aa9240bfcc2b34e18072\transformed\auth-kt-debug\AndroidManifest.xml:12:13-37
-64            <meta-data
-64-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\4366be9e0d91aa9240bfcc2b34e18072\transformed\auth-kt-debug\AndroidManifest.xml:14:13-16:52
-65                android:name="io.github.jan.supabase.auth.SupabaseInitializer"
-65-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\4366be9e0d91aa9240bfcc2b34e18072\transformed\auth-kt-debug\AndroidManifest.xml:15:17-79
-66                android:value="androidx.startup" />
-66-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\4366be9e0d91aa9240bfcc2b34e18072\transformed\auth-kt-debug\AndroidManifest.xml:16:17-49
-67            <meta-data
-67-->[androidx.emoji2:emoji2:1.3.0] C:\Users\harsh\.gradle\caches\8.9\transforms\cb8ad7632dbbe71626910af32b4514d1\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
-68                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-68-->[androidx.emoji2:emoji2:1.3.0] C:\Users\harsh\.gradle\caches\8.9\transforms\cb8ad7632dbbe71626910af32b4514d1\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
-69                android:value="androidx.startup" />
-69-->[androidx.emoji2:emoji2:1.3.0] C:\Users\harsh\.gradle\caches\8.9\transforms\cb8ad7632dbbe71626910af32b4514d1\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
-70            <meta-data
-70-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\harsh\.gradle\caches\8.9\transforms\62810bf93330196bcc749fea443ca400\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:29:13-31:52
-71                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-71-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\harsh\.gradle\caches\8.9\transforms\62810bf93330196bcc749fea443ca400\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:30:17-78
-72                android:value="androidx.startup" />
-72-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\harsh\.gradle\caches\8.9\transforms\62810bf93330196bcc749fea443ca400\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:31:17-49
-73            <meta-data
-73-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
-74                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-74-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
-75                android:value="androidx.startup" />
-75-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
-76            <meta-data
-76-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.2.0] C:\Users\harsh\.gradle\caches\8.9\transforms\77202af6927a1d4a6d49af47b16d7cdc\transformed\multiplatform-settings-no-arg-debug\AndroidManifest.xml:29:13-31:52
-77                android:name="com.russhwolf.settings.SettingsInitializer"
-77-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.2.0] C:\Users\harsh\.gradle\caches\8.9\transforms\77202af6927a1d4a6d49af47b16d7cdc\transformed\multiplatform-settings-no-arg-debug\AndroidManifest.xml:30:17-74
-78                android:value="androidx.startup" />
-78-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.2.0] C:\Users\harsh\.gradle\caches\8.9\transforms\77202af6927a1d4a6d49af47b16d7cdc\transformed\multiplatform-settings-no-arg-debug\AndroidManifest.xml:31:17-49
-79        </provider>
-80
-81        <activity
-81-->[androidx.compose.ui:ui-tooling-android:1.7.5] C:\Users\harsh\.gradle\caches\8.9\transforms\c9e7bbcd292ce5fc2e9acf3966106533\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
-82            android:name="androidx.compose.ui.tooling.PreviewActivity"
-82-->[androidx.compose.ui:ui-tooling-android:1.7.5] C:\Users\harsh\.gradle\caches\8.9\transforms\c9e7bbcd292ce5fc2e9acf3966106533\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
-83            android:exported="true" />
-83-->[androidx.compose.ui:ui-tooling-android:1.7.5] C:\Users\harsh\.gradle\caches\8.9\transforms\c9e7bbcd292ce5fc2e9acf3966106533\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
-84
-85        <service
-85-->[androidx.room:room-runtime:2.6.1] C:\Users\harsh\.gradle\caches\8.9\transforms\bf2a970a1637debb017706804fb30114\transformed\room-runtime-2.6.1\AndroidManifest.xml:24:9-28:63
-86            android:name="androidx.room.MultiInstanceInvalidationService"
-86-->[androidx.room:room-runtime:2.6.1] C:\Users\harsh\.gradle\caches\8.9\transforms\bf2a970a1637debb017706804fb30114\transformed\room-runtime-2.6.1\AndroidManifest.xml:25:13-74
-87            android:directBootAware="true"
-87-->[androidx.room:room-runtime:2.6.1] C:\Users\harsh\.gradle\caches\8.9\transforms\bf2a970a1637debb017706804fb30114\transformed\room-runtime-2.6.1\AndroidManifest.xml:26:13-43
-88            android:exported="false" />
-88-->[androidx.room:room-runtime:2.6.1] C:\Users\harsh\.gradle\caches\8.9\transforms\bf2a970a1637debb017706804fb30114\transformed\room-runtime-2.6.1\AndroidManifest.xml:27:13-37
-89
-90        <receiver
-90-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
-91            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-91-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
-92            android:directBootAware="false"
-92-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
-93            android:enabled="true"
-93-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
-94            android:exported="true"
-94-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
-95            android:permission="android.permission.DUMP" >
-95-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
-96            <intent-filter>
-96-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
-97                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-97-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
-97-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
-98            </intent-filter>
-99            <intent-filter>
-99-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
-100                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-100-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
-100-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
-101            </intent-filter>
-102            <intent-filter>
-102-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
-103                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-103-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
-103-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
-104            </intent-filter>
-105            <intent-filter>
-105-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
-106                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-106-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
-106-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\fb5a26784c5a9cd8793ac9e0afb23adb\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
-107            </intent-filter>
-108        </receiver>
-109    </application>
-110
-111</manifest>
+37        android:testOnly="true"
+38        android:theme="@style/Theme.KiranStoreManager" >
+38-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:19:9-55
+39        <activity
+39-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:23:9-32:20
+40            android:name="com.kiranstore.manager.MainActivity"
+40-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:24:13-41
+41            android:exported="true"
+41-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:25:13-36
+42            android:theme="@style/Theme.KiranStoreManager.SplashScreen"
+42-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:27:13-72
+43            android:windowSoftInputMode="adjustResize" >
+43-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:26:13-55
+44            <intent-filter>
+44-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:28:13-31:29
+45                <action android:name="android.intent.action.MAIN" />
+45-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:29:17-69
+45-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:29:25-66
+46
+47                <category android:name="android.intent.category.LAUNCHER" />
+47-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:30:17-77
+47-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:30:27-74
+48            </intent-filter>
+49        </activity>
+50
+51        <!-- Contact Picker Provider -->
+52        <provider
+53            android:name="androidx.core.content.FileProvider"
+53-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:36:13-62
+54            android:authorities="com.kiranstore.manager.fileprovider"
+54-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:37:13-64
+55            android:exported="false"
+55-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:38:13-37
+56            android:grantUriPermissions="true" >
+56-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:39:13-47
+57            <meta-data
+57-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:40:13-42:54
+58                android:name="android.support.FILE_PROVIDER_PATHS"
+58-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:41:17-67
+59                android:resource="@xml/file_paths" />
+59-->D:\codes3\KiranStoreManager\app\src\main\AndroidManifest.xml:42:17-51
+60        </provider>
+61        <provider
+61-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\36033e6f740a5848ba6ac2a7b2300a4c\transformed\auth-kt-debug\AndroidManifest.xml:9:9-17:20
+62            android:name="androidx.startup.InitializationProvider"
+62-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\36033e6f740a5848ba6ac2a7b2300a4c\transformed\auth-kt-debug\AndroidManifest.xml:10:13-67
+63            android:authorities="com.kiranstore.manager.androidx-startup"
+63-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\36033e6f740a5848ba6ac2a7b2300a4c\transformed\auth-kt-debug\AndroidManifest.xml:11:13-68
+64            android:exported="false" >
+64-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\36033e6f740a5848ba6ac2a7b2300a4c\transformed\auth-kt-debug\AndroidManifest.xml:12:13-37
+65            <meta-data
+65-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\36033e6f740a5848ba6ac2a7b2300a4c\transformed\auth-kt-debug\AndroidManifest.xml:14:13-16:52
+66                android:name="io.github.jan.supabase.auth.SupabaseInitializer"
+66-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\36033e6f740a5848ba6ac2a7b2300a4c\transformed\auth-kt-debug\AndroidManifest.xml:15:17-79
+67                android:value="androidx.startup" />
+67-->[io.github.jan-tennert.supabase:auth-kt-android-debug:3.0.2] C:\Users\harsh\.gradle\caches\8.9\transforms\36033e6f740a5848ba6ac2a7b2300a4c\transformed\auth-kt-debug\AndroidManifest.xml:16:17-49
+68            <meta-data
+68-->[androidx.emoji2:emoji2:1.3.0] C:\Users\harsh\.gradle\caches\8.9\transforms\c932f77585ba71a051c9fa9095a9b09c\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+69                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+69-->[androidx.emoji2:emoji2:1.3.0] C:\Users\harsh\.gradle\caches\8.9\transforms\c932f77585ba71a051c9fa9095a9b09c\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+70                android:value="androidx.startup" />
+70-->[androidx.emoji2:emoji2:1.3.0] C:\Users\harsh\.gradle\caches\8.9\transforms\c932f77585ba71a051c9fa9095a9b09c\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+71            <meta-data
+71-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\harsh\.gradle\caches\8.9\transforms\43424eb3e0928a4f022527c436428049\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:29:13-31:52
+72                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+72-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\harsh\.gradle\caches\8.9\transforms\43424eb3e0928a4f022527c436428049\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:30:17-78
+73                android:value="androidx.startup" />
+73-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\harsh\.gradle\caches\8.9\transforms\43424eb3e0928a4f022527c436428049\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:31:17-49
+74            <meta-data
+74-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
+75                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+75-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
+76                android:value="androidx.startup" />
+76-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
+77            <meta-data
+77-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.2.0] C:\Users\harsh\.gradle\caches\8.9\transforms\17b93c7a563e8d1147833eabe594fdb4\transformed\multiplatform-settings-no-arg-debug\AndroidManifest.xml:29:13-31:52
+78                android:name="com.russhwolf.settings.SettingsInitializer"
+78-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.2.0] C:\Users\harsh\.gradle\caches\8.9\transforms\17b93c7a563e8d1147833eabe594fdb4\transformed\multiplatform-settings-no-arg-debug\AndroidManifest.xml:30:17-74
+79                android:value="androidx.startup" />
+79-->[com.russhwolf:multiplatform-settings-no-arg-android-debug:1.2.0] C:\Users\harsh\.gradle\caches\8.9\transforms\17b93c7a563e8d1147833eabe594fdb4\transformed\multiplatform-settings-no-arg-debug\AndroidManifest.xml:31:17-49
+80        </provider>
+81
+82        <activity
+82-->[androidx.compose.ui:ui-tooling-android:1.7.5] C:\Users\harsh\.gradle\caches\8.9\transforms\70fee5b180449dd04042e33263969aff\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
+83            android:name="androidx.compose.ui.tooling.PreviewActivity"
+83-->[androidx.compose.ui:ui-tooling-android:1.7.5] C:\Users\harsh\.gradle\caches\8.9\transforms\70fee5b180449dd04042e33263969aff\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
+84            android:exported="true" />
+84-->[androidx.compose.ui:ui-tooling-android:1.7.5] C:\Users\harsh\.gradle\caches\8.9\transforms\70fee5b180449dd04042e33263969aff\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
+85
+86        <service
+86-->[androidx.room:room-runtime:2.6.1] C:\Users\harsh\.gradle\caches\8.9\transforms\5a88b54a109696364913ca477a1183d2\transformed\room-runtime-2.6.1\AndroidManifest.xml:24:9-28:63
+87            android:name="androidx.room.MultiInstanceInvalidationService"
+87-->[androidx.room:room-runtime:2.6.1] C:\Users\harsh\.gradle\caches\8.9\transforms\5a88b54a109696364913ca477a1183d2\transformed\room-runtime-2.6.1\AndroidManifest.xml:25:13-74
+88            android:directBootAware="true"
+88-->[androidx.room:room-runtime:2.6.1] C:\Users\harsh\.gradle\caches\8.9\transforms\5a88b54a109696364913ca477a1183d2\transformed\room-runtime-2.6.1\AndroidManifest.xml:26:13-43
+89            android:exported="false" />
+89-->[androidx.room:room-runtime:2.6.1] C:\Users\harsh\.gradle\caches\8.9\transforms\5a88b54a109696364913ca477a1183d2\transformed\room-runtime-2.6.1\AndroidManifest.xml:27:13-37
+90
+91        <receiver
+91-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
+92            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+92-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
+93            android:directBootAware="false"
+93-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
+94            android:enabled="true"
+94-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
+95            android:exported="true"
+95-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
+96            android:permission="android.permission.DUMP" >
+96-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
+97            <intent-filter>
+97-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
+98                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+98-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
+98-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
+99            </intent-filter>
+100            <intent-filter>
+100-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
+101                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+101-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
+101-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
+102            </intent-filter>
+103            <intent-filter>
+103-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
+104                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+104-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
+104-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
+105            </intent-filter>
+106            <intent-filter>
+106-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
+107                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+107-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
+107-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\harsh\.gradle\caches\8.9\transforms\b1a452a5cca7b3e9bf67c3b59653525b\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+108            </intent-filter>
+109        </receiver>
+110    </application>
+111
+112</manifest>
