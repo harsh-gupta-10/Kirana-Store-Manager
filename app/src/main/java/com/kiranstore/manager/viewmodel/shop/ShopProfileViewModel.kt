@@ -101,7 +101,7 @@ class ShopProfileViewModel @Inject constructor(
                 val existingShop = _state.value.shop
                 if (existingShop != null) {
                     val updated = shopRepository.updateShopProfile(
-                        shop.copy(id = existingShop.id)
+                        shop.copy(id = existingShop.id, userId = existingShop.userId)
                     )
                     _state.value = _state.value.copy(
                         isSaving = false,

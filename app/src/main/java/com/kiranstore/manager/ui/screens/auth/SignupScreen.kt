@@ -42,6 +42,15 @@ fun SignupScreen(
     var localError by remember { mutableStateOf<String?>(null) }
     val focusManager = LocalFocusManager.current
 
+    val attemptSignup = {
+        if (password != confirmPassword) {
+            localError = "Passwords do not match"
+        } else if (email.isNotBlank() && password.isNotBlank()) {
+            localError = null
+            onSignup(email.trim(), password)
+        }
+    }
+
     LaunchedEffect(authState.signupSuccess) {
         if (authState.signupSuccess) {
             onNavigateToLogin()
@@ -163,9 +172,7 @@ fun SignupScreen(
             keyboardActions = KeyboardActions(
                 onDone = {
                     focusManager.clearFocus()
-                    if (password == confirmPassword && email.isNotBlank() && password.isNotBlank()) {
-                        onSignup(email.trim(), password)
-                    }
+                    attemptSignup()
                 }
             ),
             singleLine = true,
@@ -192,14 +199,7 @@ fun SignupScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = {
-                if (password != confirmPassword) {
-                    localError = "Passwords do not match"
-                } else {
-                    localError = null
-                    onSignup(email.trim(), password)
-                }
-            },
+            onClick = { attemptSignup() },
             enabled = email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank() && !authState.isLoading,
             modifier = Modifier
                 .fillMaxWidth()
