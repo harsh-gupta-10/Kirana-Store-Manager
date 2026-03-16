@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kiranstore.manager.ui.components.formatAmount
 import com.kiranstore.manager.ui.theme.*
 import com.kiranstore.manager.viewmodel.CustomerViewModel
 import com.kiranstore.manager.viewmodel.UdhaarViewModel
