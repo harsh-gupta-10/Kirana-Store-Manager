@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -14,10 +13,12 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import com.kiranstore.manager.ui.screens.buylist.BuyListScreen
 import com.kiranstore.manager.ui.screens.customers.*
 import com.kiranstore.manager.ui.screens.home.HomeScreen
-import com.kiranstore.manager.ui.screens.placeholder.*
 import com.kiranstore.manager.ui.screens.rentals.*
+import com.kiranstore.manager.ui.screens.settings.SettingsScreen
+import com.kiranstore.manager.ui.screens.tasks.TasksScreen
 import com.kiranstore.manager.ui.screens.udhar.*
 import com.kiranstore.manager.ui.theme.*
 
@@ -87,7 +88,10 @@ fun AppNavGraph() {
                 composable(Screen.Home.route) {
                     HomeScreen(
                         onAddUdhaar = { navController.navigate(Screen.AddUdhaar.createRoute()) },
-                        onAddRental = { navController.navigate(Screen.AddRental.route) }
+                        onAddRental = { navController.navigate(Screen.AddRental.route) },
+                        onNavigateToTasks = { navController.navigate(Screen.Tasks.route) },
+                        onNavigateToBuyList = { navController.navigate(Screen.BuyList.route) },
+                        onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
                     )
                 }
 
@@ -195,7 +199,7 @@ fun AppNavGraph() {
                     )
                 }
 
-                // ── Placeholders ──────────────────────────────────────────
+                // ── Tasks / Buy List / Settings ─────────────────────────
                 composable(Screen.Tasks.route) { TasksScreen() }
                 composable(Screen.BuyList.route) { BuyListScreen() }
                 composable(Screen.Settings.route) { SettingsScreen() }
