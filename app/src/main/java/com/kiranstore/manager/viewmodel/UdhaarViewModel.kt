@@ -29,7 +29,11 @@ class UdhaarViewModel @Inject constructor(
     private val paymentRepository: PaymentRepository
 ) : ViewModel() {
 
-    val totalOutstanding: Flow<Double> = debtRepository.getTotalAllDebts()
+    /**
+     * Total outstanding Udhar across all customers.
+     * Formula: Total Remaining = SUM(all debts) - SUM(all payments)
+     */
+    val totalOutstanding: Flow<Double> = debtRepository.getTotalRemainingBalance()
     val recoveredToday: Flow<Double> = paymentRepository.getPaymentsRecoveredToday()
 
     private val _searchQuery = MutableStateFlow("")
@@ -54,6 +58,13 @@ class UdhaarViewModel @Inject constructor(
 
     fun getTotalPaidForCustomer(customerId: Long): Flow<Double> =
         paymentRepository.getTotalPaymentsForCustomer(customerId)
+
+    /**
+     * Gets the remaining balance for a specific customer.
+     * Formula: Remaining = SUM(debts.amount) - SUM(payments.amount)
+     */
+    fun getRemainingBalanceForCustomer(customerId: Long): Flow<Double> =
+        debtRepository.getRemainingBalanceForCustomer(customerId)
 
     fun saveDebt(
         customerId: Long,
