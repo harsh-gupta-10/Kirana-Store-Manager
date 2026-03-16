@@ -46,6 +46,13 @@ class CustomerViewModel @Inject constructor(
     fun getPaymentTotalForCustomer(customerId: Long) =
         paymentRepository.getTotalPaymentsForCustomer(customerId)
 
+    /**
+     * Gets the remaining balance (Udhar) for a specific customer.
+     * Formula: Remaining = SUM(debts.amount) - SUM(payments.amount)
+     */
+    fun getRemainingBalanceForCustomer(customerId: Long) =
+        debtRepository.getRemainingBalanceForCustomer(customerId)
+
     fun getDebtsForCustomer(customerId: Long) =
         debtRepository.getDebtsForCustomer(customerId)
 

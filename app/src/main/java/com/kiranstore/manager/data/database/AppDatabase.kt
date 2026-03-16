@@ -2,6 +2,8 @@ package com.kiranstore.manager.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.kiranstore.manager.data.database.converters.RentalStatusConverter
 import com.kiranstore.manager.data.database.dao.*
 import com.kiranstore.manager.data.database.entities.*
 
@@ -16,6 +18,7 @@ import com.kiranstore.manager.data.database.entities.*
     version = 1,
     exportSchema = false
 )
+@TypeConverters(RentalStatusConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun customerDao(): CustomerDao
     abstract fun debtDao(): DebtDao

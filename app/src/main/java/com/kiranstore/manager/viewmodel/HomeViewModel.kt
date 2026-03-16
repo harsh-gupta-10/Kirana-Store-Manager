@@ -19,7 +19,11 @@ class HomeViewModel @Inject constructor(
     private val rentalRepository: RentalRepository
 ) : ViewModel() {
 
-    val totalUdhaarAmount: Flow<Double> = debtRepository.getTotalAllDebts()
+    /**
+     * Total Udhar amount (remaining balance) across all customers.
+     * Formula: Total Remaining = SUM(all debts) - SUM(all payments)
+     */
+    val totalUdhaarAmount: Flow<Double> = debtRepository.getTotalRemainingBalance()
     val totalCustomers: Flow<List<Customer>> = customerRepository.getAllCustomers()
     val activeRentalCount: Flow<Int> = rentalRepository.getActiveRentalCount()
     val recentDebts: Flow<List<Debt>> = debtRepository.getRecentDebts()

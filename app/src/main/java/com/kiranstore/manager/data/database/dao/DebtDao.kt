@@ -19,6 +19,32 @@ interface DebtDao {
     @Query("SELECT COALESCE(SUM(amount), 0) FROM debts")
     fun getTotalAllDebts(): Flow<Double>
 
+    /**
+     * Calculates the remaining Udhar (balance) for a customer.
+     * Formula: Remaining = SUM(debts.amount) - SUM(payments.amount)
+     */
+    @Query("""
+        SELECT COALESCE(
+            (SELECT SUM(amount) FROM debts WHERE customerId = :customerId), 0
+        ) - COALESCE(
+            (SELECT SUM(amount) FROM payments WHERE customerId = :customerId), 0
+        )
+    """)
+    fun getRemainingBalanceForCustomer(customerId: Long): Flow<Double>
+
+    /**
+     * Calculates the total remaining Udhar (balance) across all customers.
+     * Formula: Total Remaining = SUM(all debts) - SUM(all payments)
+     */
+    @Query("""
+        SELECT COALESCE(
+            (SELECT SUM(amount) FROM debts), 0
+        ) - COALESCE(
+            (SELECT SUM(amount) FROM payments), 0
+        )
+    """)
+    fun getTotalRemainingBalance(): Flow<Double>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDebt(debt: Debt): Long
 

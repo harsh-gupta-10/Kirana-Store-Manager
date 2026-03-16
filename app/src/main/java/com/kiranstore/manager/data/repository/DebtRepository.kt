@@ -22,6 +22,20 @@ class DebtRepository @Inject constructor(
     fun getTotalAllDebts(): Flow<Double> =
         debtDao.getTotalAllDebts()
 
+    /**
+     * Gets the remaining balance (Udhar) for a specific customer.
+     * Formula: Remaining = SUM(debts.amount) - SUM(payments.amount)
+     */
+    fun getRemainingBalanceForCustomer(customerId: Long): Flow<Double> =
+        debtDao.getRemainingBalanceForCustomer(customerId)
+
+    /**
+     * Gets the total remaining balance (Udhar) across all customers.
+     * Formula: Total Remaining = SUM(all debts) - SUM(all payments)
+     */
+    fun getTotalRemainingBalance(): Flow<Double> =
+        debtDao.getTotalRemainingBalance()
+
     suspend fun insertDebt(debt: Debt): Long =
         debtDao.insertDebt(debt)
 
