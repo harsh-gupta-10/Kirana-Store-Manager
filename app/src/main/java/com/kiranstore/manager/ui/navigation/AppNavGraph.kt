@@ -13,6 +13,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import com.kiranstore.manager.data.remote.VoiceAction
+import com.kiranstore.manager.ui.screens.auth.LoginScreen
 import com.kiranstore.manager.ui.screens.buylist.BuyListScreen
 import com.kiranstore.manager.ui.screens.customers.*
 import com.kiranstore.manager.ui.screens.home.HomeScreen
@@ -36,6 +38,32 @@ fun AppNavGraph() {
         Screen.Customers.route
     )
     val showBottomBar = bottomBarRoutes.any { currentRoute?.startsWith(it) == true }
+
+    // Voice action handler
+    val handleVoiceAction: (VoiceAction) -> Unit = { action ->
+        when (action) {
+            is VoiceAction.AddUdhaar -> navController.navigate(Screen.AddUdhaar.createRoute())
+            is VoiceAction.AddPayment -> navController.navigate(Screen.AddPayment.createRoute())
+            is VoiceAction.AddCustomer -> navController.navigate(Screen.AddCustomer.route)
+            is VoiceAction.AddRental -> navController.navigate(Screen.AddRental.route)
+            is VoiceAction.AddTask -> navController.navigate(Screen.Tasks.route)
+            is VoiceAction.AddBuyItem -> navController.navigate(Screen.BuyList.route)
+            is VoiceAction.NavigateHome -> navController.navigate(Screen.Home.route) {
+                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                launchSingleTop = true
+            }
+            is VoiceAction.NavigateCustomers -> navController.navigate(Screen.Customers.route) {
+                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                launchSingleTop = true
+            }
+            is VoiceAction.NavigateRentals -> navController.navigate(Screen.Rentals.route) {
+                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                launchSingleTop = true
+            }
+            is VoiceAction.NavigateSettings -> navController.navigate(Screen.Settings.route)
+            is VoiceAction.Unknown -> { /* No navigation for unknown commands */ }
+        }
+    }
 
     Scaffold(
         containerColor = BackgroundGrey,
@@ -91,7 +119,8 @@ fun AppNavGraph() {
                         onAddRental = { navController.navigate(Screen.AddRental.route) },
                         onNavigateToTasks = { navController.navigate(Screen.Tasks.route) },
                         onNavigateToBuyList = { navController.navigate(Screen.BuyList.route) },
-                        onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
+                        onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                        onVoiceAction = handleVoiceAction
                     )
                 }
 
@@ -202,7 +231,18 @@ fun AppNavGraph() {
                 // ── Tasks / Buy List / Settings ─────────────────────────
                 composable(Screen.Tasks.route) { TasksScreen() }
                 composable(Screen.BuyList.route) { BuyListScreen() }
-                composable(Screen.Settings.route) { SettingsScreen() }
+                composable(Screen.Settings.route) {
+                    SettingsScreen(
+                        onNavigateToLogin = { navController.navigate(Screen.Login.route) }
+                    )
+                }
+
+                // ── Login / Auth ────────────────────────────────────────
+                composable(Screen.Login.route) {
+                    LoginScreen(
+                        onAuthenticated = { navController.popBackStack() }
+                    )
+                }
             }
         }
     }

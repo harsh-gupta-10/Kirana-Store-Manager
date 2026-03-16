@@ -15,14 +15,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.kiranstore.manager.data.remote.AuthState
 import com.kiranstore.manager.ui.theme.*
+import com.kiranstore.manager.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    onNavigateToLogin: () -> Unit = {},
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
     var notificationsEnabled by remember { mutableStateOf(true) }
     var dailyReminder by remember { mutableStateOf(true) }
     var darkMode by remember { mutableStateOf(false) }
+
+    val authState by authViewModel.authState.collectAsState()
 
     Scaffold(
         containerColor = BackgroundGrey,
@@ -82,6 +90,61 @@ fun SettingsScreen() {
                             tint = TextSecondary, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(12.dp))
                         Text("Address: Not set", fontSize = 14.sp, color = TextSecondary)
+                    }
+                }
+            }
+
+            // Cloud Account Section
+            SectionLabel("Cloud Account / क्लाउड खाता")
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = CardWhite),
+                elevation = CardDefaults.cardElevation(1.dp)
+            ) {
+                Column {
+                    when (val state = authState) {
+                        is AuthState.Authenticated -> {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(Icons.Filled.CloudDone, contentDescription = null,
+                                    tint = GreenSuccess, modifier = Modifier.size(22.dp))
+                                Spacer(Modifier.width(14.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text("Connected", fontWeight = FontWeight.Medium,
+                                        fontSize = 15.sp, color = GreenSuccess)
+                                    Text(state.userEmail, fontSize = 12.sp, color = TextSecondary)
+                                }
+                            }
+                            Divider(color = DividerColor, modifier = Modifier.padding(horizontal = 16.dp))
+                            SettingsClickRow(
+                                icon = Icons.Filled.Sync,
+                                title = "Sync Now",
+                                subtitle = "अभी सिंक करें",
+                                onClick = {}
+                            )
+                            Divider(color = DividerColor, modifier = Modifier.padding(horizontal = 16.dp))
+                            SettingsClickRow(
+                                icon = Icons.Filled.Logout,
+                                title = "Sign Out",
+                                subtitle = "साइन आउट करें",
+                                onClick = { authViewModel.signOut() }
+                            )
+                        }
+                        else -> {
+                            SettingsClickRow(
+                                icon = Icons.Filled.CloudOff,
+                                title = "Sign In to Cloud",
+                                subtitle = "क्लाउड में साइन इन करें",
+                                onClick = onNavigateToLogin
+                            )
+                        }
                     }
                 }
             }

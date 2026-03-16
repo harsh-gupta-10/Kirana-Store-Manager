@@ -1,5 +1,6 @@
 package com.kiranstore.manager.ui.screens.home
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,14 +17,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kiranstore.manager.data.database.entities.Debt
+import com.kiranstore.manager.data.remote.VoiceAction
 import com.kiranstore.manager.ui.components.*
 import com.kiranstore.manager.ui.theme.*
 import com.kiranstore.manager.viewmodel.CustomerViewModel
 import com.kiranstore.manager.viewmodel.HomeViewModel
+import com.kiranstore.manager.viewmodel.VoiceCommandViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,14 +37,28 @@ fun HomeScreen(
     onNavigateToTasks: () -> Unit = {},
     onNavigateToBuyList: () -> Unit = {},
     onNavigateToSettings: () -> Unit = {},
+    onVoiceAction: (VoiceAction) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
-    customerViewModel: CustomerViewModel = hiltViewModel()
+    customerViewModel: CustomerViewModel = hiltViewModel(),
+    voiceViewModel: VoiceCommandViewModel = hiltViewModel()
 ) {
     val totalUdhaar by viewModel.totalUdhaarAmount.collectAsState(initial = 0.0)
     val customers by viewModel.totalCustomers.collectAsState(initial = emptyList())
     val activeRentals by viewModel.activeRentalCount.collectAsState(initial = 0)
     val recentDebts by viewModel.recentDebts.collectAsState(initial = emptyList())
     val recoveredToday by viewModel.recoveredToday.collectAsState(initial = 0.0)
+
+    val voiceState by voiceViewModel.state.collectAsState()
+    var showVoiceDialog by remember { mutableStateOf(false) }
+
+    // Handle parsed voice action
+    LaunchedEffect(voiceState.parsedAction) {
+        voiceState.parsedAction?.let { action ->
+            onVoiceAction(action)
+            voiceViewModel.clearState()
+            showVoiceDialog = false
+        }
+    }
 
     Scaffold(
         containerColor = BackgroundGrey,
@@ -80,6 +98,15 @@ fun HomeScreen(
                     }
                 }
             }
+        },
+        floatingActionButton = {
+            VoiceFab(
+                isListening = voiceState.isListening,
+                onClick = {
+                    showVoiceDialog = true
+                    voiceViewModel.startListening()
+                }
+            )
         }
     ) { padding ->
         LazyColumn(
@@ -236,6 +263,147 @@ fun HomeScreen(
             }
         }
     }
+
+    // Voice command dialog
+    if (showVoiceDialog) {
+        VoiceCommandDialog(
+            isListening = voiceState.isListening,
+            isProcessing = voiceState.isProcessing,
+            recognizedText = voiceState.recognizedText,
+            error = voiceState.error,
+            onDismiss = {
+                voiceViewModel.stopListening()
+                voiceViewModel.clearState()
+                showVoiceDialog = false
+            },
+            onRetry = {
+                voiceViewModel.startListening()
+            }
+        )
+    }
+}
+
+@Composable
+private fun VoiceFab(
+    isListening: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isListening) RedDanger else OrangePrimary,
+        label = "fab_color"
+    )
+
+    FloatingActionButton(
+        onClick = onClick,
+        containerColor = backgroundColor,
+        contentColor = Color.White,
+        shape = CircleShape
+    ) {
+        Icon(
+            imageVector = if (isListening) Icons.Filled.MicOff else Icons.Filled.Mic,
+            contentDescription = if (isListening) "Stop listening" else "Voice command",
+            modifier = Modifier.size(28.dp)
+        )
+    }
+}
+
+@Composable
+private fun VoiceCommandDialog(
+    isListening: Boolean,
+    isProcessing: Boolean,
+    recognizedText: String,
+    error: String?,
+    onDismiss: () -> Unit,
+    onRetry: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Filled.Mic,
+                    contentDescription = null,
+                    tint = OrangePrimary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("Voice Command", fontWeight = FontWeight.Bold)
+            }
+        },
+        text = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                when {
+                    isListening -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(48.dp),
+                            color = OrangePrimary,
+                            strokeWidth = 3.dp
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            "Listening... Speak now\nसुन रहा हूँ... बोलें",
+                            textAlign = TextAlign.Center,
+                            color = TextSecondary,
+                            fontSize = 14.sp
+                        )
+                    }
+                    isProcessing -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(48.dp),
+                            color = OrangePrimary,
+                            strokeWidth = 3.dp
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            "Processing: \"$recognizedText\"",
+                            textAlign = TextAlign.Center,
+                            color = TextPrimary,
+                            fontSize = 14.sp
+                        )
+                    }
+                    error != null -> {
+                        Icon(
+                            Icons.Filled.ErrorOutline,
+                            contentDescription = null,
+                            tint = RedDanger,
+                            modifier = Modifier.size(48.dp)
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            error,
+                            textAlign = TextAlign.Center,
+                            color = RedDanger,
+                            fontSize = 14.sp
+                        )
+                    }
+                    recognizedText.isNotBlank() -> {
+                        Text(
+                            "\"$recognizedText\"",
+                            textAlign = TextAlign.Center,
+                            color = TextPrimary,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            if (error != null) {
+                TextButton(onClick = onRetry) {
+                    Text("Try Again", color = OrangePrimary)
+                }
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Close", color = TextSecondary)
+            }
+        }
+    )
 }
 
 @Composable
