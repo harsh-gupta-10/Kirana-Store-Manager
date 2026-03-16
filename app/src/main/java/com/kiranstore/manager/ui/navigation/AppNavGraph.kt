@@ -87,7 +87,10 @@ fun AppNavGraph() {
                 composable(Screen.Home.route) {
                     HomeScreen(
                         onAddUdhaar = { navController.navigate(Screen.AddUdhaar.createRoute()) },
-                        onAddRental = { navController.navigate(Screen.AddRental.route) }
+                        onAddRental = { navController.navigate(Screen.AddRental.route) },
+                        onAddCustomer = { navController.navigate(Screen.AddCustomer.route) },
+                        onAddPayment = { navController.navigate(Screen.AddPayment.createRoute()) },
+                        onOpenSettings = { navController.navigate(Screen.Settings.route) }
                     )
                 }
 

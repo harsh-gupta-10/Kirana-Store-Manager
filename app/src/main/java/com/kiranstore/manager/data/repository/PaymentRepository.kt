@@ -14,6 +14,8 @@ class PaymentRepository @Inject constructor(
     fun getPaymentsForCustomer(customerId: Long): Flow<List<Payment>> =
         paymentDao.getPaymentsForCustomer(customerId)
 
+    fun getAllPayments(): Flow<List<Payment>> = paymentDao.getAllPayments()
+
     fun getTotalPaymentsForCustomer(customerId: Long): Flow<Double> =
         paymentDao.getTotalPaymentsForCustomer(customerId)
 

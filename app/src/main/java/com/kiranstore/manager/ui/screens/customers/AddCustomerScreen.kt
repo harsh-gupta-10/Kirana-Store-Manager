@@ -1,5 +1,9 @@
 package com.kiranstore.manager.ui.screens.customers
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,12 +14,14 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kiranstore.manager.ui.theme.*
+import com.kiranstore.manager.viewmodel.CloudViewModel
 import com.kiranstore.manager.viewmodel.CustomerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,13 +29,24 @@ import com.kiranstore.manager.viewmodel.CustomerViewModel
 fun AddCustomerScreen(
     onSaved: (Long) -> Unit,
     onCancel: () -> Unit,
-    viewModel: CustomerViewModel = hiltViewModel()
+    viewModel: CustomerViewModel = hiltViewModel(),
+    cloudViewModel: CloudViewModel = hiltViewModel()
 ) {
     var name by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var notes by remember { mutableStateOf("") }
     var nameError by remember { mutableStateOf(false) }
     var phoneError by remember { mutableStateOf(false) }
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val uploadState by cloudViewModel.upload.collectAsState()
+    val context = LocalContext.current
+    val pickMedia = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            selectedImageUri = uri
+            if (uri != null) cloudViewModel.clearUploadState()
+        }
+    )
 
     Scaffold(
         containerColor = BackgroundGrey,
@@ -101,6 +118,50 @@ fun AddCustomerScreen(
                         minLines = 2,
                         maxLines = 4
                     )
+                    Divider()
+                    Text("Supabase Storage (optional)", fontWeight = FontWeight.Bold, color = TextPrimary)
+                    Text(
+                        "Pick an image to upload as WebP (80%) after saving the customer.",
+                        fontSize = 12.sp,
+                        color = TextSecondary
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = {
+                            pickMedia.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        }) {
+                            Icon(Icons.Filled.Image, contentDescription = null)
+                            Spacer(Modifier.width(6.dp))
+                            Text("Choose Image")
+                        }
+                        selectedImageUri?.let { uri ->
+                            Text(
+                                text = uri.lastPathSegment ?: "Selected",
+                                color = TextSecondary,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                    when {
+                        uploadState.uploading -> {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(18.dp),
+                                    strokeWidth = 2.dp,
+                                    color = OrangePrimary
+                                )
+                                Spacer(Modifier.width(6.dp))
+                                Text("Uploading to cloud...", fontSize = 12.sp, color = TextSecondary)
+                            }
+                        }
+                        uploadState.url != null -> {
+                            Text("Uploaded: ${uploadState.url}", color = GreenSuccess, fontSize = 12.sp)
+                        }
+                        uploadState.error != null -> {
+                            Text(uploadState.error ?: "Upload failed", color = RedDanger, fontSize = 12.sp)
+                        }
+                    }
                 }
             }
 
@@ -112,17 +173,20 @@ fun AddCustomerScreen(
                 ) {
                     Text("Cancel", fontSize = 16.sp)
                 }
-                Button(
-                    onClick = {
-                        nameError = name.isBlank()
-                        phoneError = phone.isBlank()
-                        if (!nameError && !phoneError) {
-                            viewModel.saveCustomer(name, phone, notes) { id ->
-                                onSaved(id)
+                    Button(
+                        onClick = {
+                            nameError = name.isBlank()
+                            phoneError = phone.isBlank()
+                            if (!nameError && !phoneError) {
+                                viewModel.saveCustomer(name, phone, notes) { id ->
+                                    selectedImageUri?.let { uri ->
+                                        cloudViewModel.uploadCustomerImage(id, uri, context)
+                                    }
+                                    onSaved(id)
+                                }
                             }
-                        }
-                    },
-                    modifier = Modifier.weight(1f).height(52.dp),
+                        },
+                        modifier = Modifier.weight(1f).height(52.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
                 ) {

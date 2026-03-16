@@ -10,6 +10,9 @@ interface DebtDao {
     @Query("SELECT * FROM debts WHERE customerId = :customerId ORDER BY date DESC")
     fun getDebtsForCustomer(customerId: Long): Flow<List<Debt>>
 
+    @Query("SELECT * FROM debts ORDER BY date DESC")
+    fun getAllDebts(): Flow<List<Debt>>
+
     @Query("SELECT * FROM debts ORDER BY date DESC LIMIT 5")
     fun getRecentDebts(): Flow<List<Debt>>
 

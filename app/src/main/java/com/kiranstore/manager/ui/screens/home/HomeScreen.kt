@@ -1,5 +1,14 @@
 package com.kiranstore.manager.ui.screens.home
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,29 +24,119 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kiranstore.manager.data.database.entities.Debt
+import com.kiranstore.manager.data.remote.ai.VoiceAction
 import com.kiranstore.manager.ui.components.*
 import com.kiranstore.manager.ui.theme.*
+import com.kiranstore.manager.viewmodel.AssistantViewModel
 import com.kiranstore.manager.viewmodel.CustomerViewModel
 import com.kiranstore.manager.viewmodel.HomeViewModel
+import com.kiranstore.manager.viewmodel.VoiceUiState
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onAddUdhaar: () -> Unit,
     onAddRental: () -> Unit,
+    onAddCustomer: () -> Unit,
+    onAddPayment: () -> Unit,
+    onOpenSettings: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
-    customerViewModel: CustomerViewModel = hiltViewModel()
+    customerViewModel: CustomerViewModel = hiltViewModel(),
+    assistantViewModel: AssistantViewModel = hiltViewModel()
 ) {
     val totalUdhaar by viewModel.totalUdhaarAmount.collectAsState(initial = 0.0)
     val customers by viewModel.totalCustomers.collectAsState(initial = emptyList())
     val activeRentals by viewModel.activeRentalCount.collectAsState(initial = 0)
     val recentDebts by viewModel.recentDebts.collectAsState(initial = emptyList())
     val recoveredToday by viewModel.recoveredToday.collectAsState(initial = 0.0)
+    val context = LocalContext.current
+    val voiceState by assistantViewModel.state.collectAsState()
+
+    var speechError by remember { mutableStateOf<String?>(null) }
+    var hasAudioPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted ->
+            hasAudioPermission = granted
+            if (granted) {
+                speechError = null
+            } else {
+                speechError = "Microphone permission is needed for voice commands."
+            }
+        }
+    )
+
+    val speechRecognizer = remember { SpeechRecognizer.createSpeechRecognizer(context) }
+    val speechIntent = remember {
+        Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+        }
+    }
+
+    val startListening: () -> Unit = {
+        if (!hasAudioPermission) {
+            permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        } else {
+            speechError = null
+            assistantViewModel.setListening(true)
+            speechRecognizer.startListening(speechIntent)
+        }
+    }
+
+    DisposableEffect(speechRecognizer) {
+        val listener = object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) {}
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() {
+                assistantViewModel.setListening(false)
+            }
+
+            override fun onError(error: Int) {
+                assistantViewModel.setListening(false)
+                speechError = "Listening error ($error). Try again."
+            }
+
+            override fun onResults(results: Bundle?) {
+                assistantViewModel.setListening(false)
+                val text = results
+                    ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    ?.firstOrNull()
+                    ?.trim()
+                    .orEmpty()
+                if (text.isNotBlank()) {
+                    assistantViewModel.submitTranscript(text)
+                } else {
+                    speechError = "Didn't catch that. Please try again."
+                }
+            }
+
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+        }
+        speechRecognizer.setRecognitionListener(listener)
+        onDispose {
+            speechRecognizer.destroy()
+        }
+    }
 
     Scaffold(
         containerColor = BackgroundGrey,
@@ -67,11 +166,18 @@ fun HomeScreen(
                             fontSize = 16.sp, color = TextPrimary)
                         Text("नमस्ते / Welcome", fontSize = 12.sp, color = TextSecondary)
                     }
+                    IconButton(onClick = startListening) {
+                        Icon(
+                            imageVector = Icons.Filled.Mic,
+                            contentDescription = "Voice commands",
+                            tint = if (voiceState.isListening) OrangePrimary else TextSecondary
+                        )
+                    }
                     IconButton(onClick = {}) {
                         Icon(Icons.Filled.Notifications, contentDescription = "Notifications",
                             tint = TextSecondary)
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = onOpenSettings) {
                         Icon(Icons.Filled.Settings, contentDescription = "Settings",
                             tint = TextSecondary)
                     }
@@ -138,6 +244,26 @@ fun HomeScreen(
                         )
                     }
                 }
+            }
+
+            // Voice Assistant
+            item {
+                VoiceAssistantCard(
+                    voiceState = voiceState,
+                    speechError = speechError,
+                    onRetry = startListening,
+                    onAction = { action ->
+                        when (action) {
+                            VoiceAction.ADD_CUSTOMER -> onAddCustomer()
+                            VoiceAction.ADD_UDHAAR -> onAddUdhaar()
+                            VoiceAction.ADD_PAYMENT -> onAddPayment()
+                            VoiceAction.ADD_RENTAL -> onAddRental()
+                            VoiceAction.SHOW_SUMMARY -> onOpenSettings()
+                            VoiceAction.UNKNOWN -> {}
+                        }
+                        assistantViewModel.clearResult()
+                    }
+                )
             }
 
             // Quick Actions
@@ -319,6 +445,84 @@ private fun QuickActionCard(
                 fontSize = 11.sp,
                 color = if (isPrimary) Color.White.copy(alpha = 0.8f) else TextSecondary
             )
+        }
+    }
+}
+
+@Composable
+private fun VoiceAssistantCard(
+    voiceState: VoiceUiState,
+    speechError: String?,
+    onRetry: () -> Unit,
+    onAction: (VoiceAction) -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = CardWhite),
+        elevation = CardDefaults.cardElevation(1.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(
+                    shape = CircleShape,
+                    color = if (voiceState.isListening) OrangeLight else BackgroundGrey,
+                    modifier = Modifier.size(38.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Filled.Mic,
+                            contentDescription = null,
+                            tint = if (voiceState.isListening) OrangePrimary else TextSecondary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+                Spacer(Modifier.width(10.dp))
+                Column {
+                    Text("Voice Assistant", fontWeight = FontWeight.Bold, color = TextPrimary)
+                    val subtitle = when {
+                        voiceState.isListening -> "Listening..."
+                        voiceState.isProcessing -> "Understanding with Gemini..."
+                        voiceState.result != null -> "Action ready"
+                        else -> "Tap mic to speak a command"
+                    }
+                    Text(subtitle, color = TextSecondary, fontSize = 12.sp)
+                }
+                Spacer(Modifier.weight(1f))
+                OutlinedButton(onClick = onRetry) {
+                    Text(if (voiceState.isListening) "Listening" else "Start")
+                }
+            }
+
+            voiceState.transcript.takeIf { it.isNotBlank() }?.let {
+                Text("Heard: \"$it\"", color = TextPrimary, fontSize = 13.sp)
+            }
+            speechError?.let { Text(it, color = RedDanger, fontSize = 12.sp) }
+            voiceState.error?.let { Text(it, color = RedDanger, fontSize = 12.sp) }
+
+            voiceState.result?.let { result ->
+                val actionLabel = when (result.action) {
+                    VoiceAction.ADD_CUSTOMER -> "Add Customer"
+                    VoiceAction.ADD_UDHAAR -> "Add Udhaar"
+                    VoiceAction.ADD_PAYMENT -> "Add Payment"
+                    VoiceAction.ADD_RENTAL -> "Add Rental"
+                    VoiceAction.SHOW_SUMMARY -> "Open Cloud"
+                    VoiceAction.UNKNOWN -> "No action"
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text("AI Suggestion: $actionLabel", fontWeight = FontWeight.SemiBold, color = TextPrimary)
+                    result.notes?.let { Text("Notes: $it", color = TextSecondary, fontSize = 12.sp) }
+                    Button(
+                        onClick = { onAction(result.action) },
+                        colors = ButtonDefaults.buttonColors(containerColor = OrangePrimary)
+                    ) {
+                        Text("Go")
+                    }
+                }
+            }
         }
     }
 }

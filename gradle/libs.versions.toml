@@ -13,6 +13,9 @@ hiltAndroid = "2.50"
 hiltNavigationCompose = "1.1.0"
 room = "2.6.1"
 ksp = "1.9.22-1.0.17"
+supabase = "2.4.3"
+ktor = "2.3.7"
+generativeai = "0.2.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +41,12 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+supabase-bom = { group = "io.github.jan-tennert.supabase", name = "bom", version.ref = "supabase" }
+supabase-auth = { group = "io.github.jan-tennert.supabase", name = "auth-ktx" }
+supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-ktx" }
+supabase-storage = { group = "io.github.jan-tennert.supabase", name = "storage-ktx" }
+ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
+google-generativeai = { group = "com.google.ai.client.generativeai", name = "generativeai", version.ref = "generativeai" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
