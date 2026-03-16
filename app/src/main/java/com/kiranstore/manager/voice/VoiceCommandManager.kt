@@ -96,7 +96,7 @@ class VoiceCommandManager(private val context: Context) {
             speechRecognizer?.stopListening()
             speechRecognizer?.destroy()
         } catch (_: Exception) {
-            // Ignore cleanup errors
+            // SpeechRecognizer may throw if already destroyed or not initialized
         }
         speechRecognizer = null
     }

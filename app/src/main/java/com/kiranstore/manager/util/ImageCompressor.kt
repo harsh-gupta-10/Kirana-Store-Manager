@@ -60,6 +60,8 @@ object ImageCompressor {
         val newWidth = (width * scale).toInt()
         val newHeight = (height * scale).toInt()
 
-        return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+        val scaled = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+        bitmap.recycle()
+        return scaled
     }
 }

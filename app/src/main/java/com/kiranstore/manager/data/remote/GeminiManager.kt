@@ -72,13 +72,14 @@ class GeminiManager @Inject constructor() {
         val line = response.trim().lines().firstOrNull()?.trim() ?: return VoiceAction.Unknown(originalText)
         val parts = line.split("|")
         val action = parts.firstOrNull() ?: return VoiceAction.Unknown(originalText)
-        val params = parts.drop(1).associate { param ->
-            val (key, value) = param.split("=", limit = 2).let {
-                if (it.size == 2) it[0].trim() to it[1].trim()
-                else it[0].trim() to ""
+        val params = parts.drop(1).mapNotNull { param ->
+            val eqIdx = param.indexOf('=')
+            if (eqIdx > 0) {
+                param.substring(0, eqIdx).trim() to param.substring(eqIdx + 1).trim()
+            } else {
+                null
             }
-            key to value
-        }
+        }.toMap()
 
         return when (action.uppercase()) {
             "ADD_UDHAAR" -> VoiceAction.AddUdhaar(

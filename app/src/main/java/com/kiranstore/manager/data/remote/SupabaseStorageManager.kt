@@ -35,6 +35,7 @@ class SupabaseStorageManager @Inject constructor(
                 bitmap = originalBitmap,
                 quality = 80
             )
+            originalBitmap.recycle()
 
             val fileName = "$folder/${UUID.randomUUID()}.webp"
             val bucket = client.storage[BUCKET_NAME]
