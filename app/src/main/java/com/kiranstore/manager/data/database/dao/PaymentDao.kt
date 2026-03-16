@@ -10,6 +10,9 @@ interface PaymentDao {
     @Query("SELECT * FROM payments WHERE customerId = :customerId ORDER BY date DESC")
     fun getPaymentsForCustomer(customerId: Long): Flow<List<Payment>>
 
+    @Query("SELECT * FROM payments ORDER BY date DESC")
+    fun getAllPayments(): Flow<List<Payment>>
+
     @Query("SELECT COALESCE(SUM(amount), 0) FROM payments WHERE customerId = :customerId")
     fun getTotalPaymentsForCustomer(customerId: Long): Flow<Double>
 

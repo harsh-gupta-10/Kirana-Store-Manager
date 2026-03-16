@@ -13,6 +13,8 @@ class DebtRepository @Inject constructor(
     fun getDebtsForCustomer(customerId: Long): Flow<List<Debt>> =
         debtDao.getDebtsForCustomer(customerId)
 
+    fun getAllDebts(): Flow<List<Debt>> = debtDao.getAllDebts()
+
     fun getRecentDebts(): Flow<List<Debt>> =
         debtDao.getRecentDebts()
 

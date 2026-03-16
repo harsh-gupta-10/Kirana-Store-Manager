@@ -18,6 +18,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Cloud + AI keys are read from gradle.properties or your environment.
+        val supabaseUrl: String =
+            (project.findProperty("SUPABASE_URL") as String?)?.takeIf { it.isNotBlank() } ?: ""
+        val supabaseAnonKey: String =
+            (project.findProperty("SUPABASE_ANON_KEY") as String?)?.takeIf { it.isNotBlank() } ?: ""
+        val geminiKey: String =
+            (project.findProperty("GEMINI_API_KEY") as String?)?.takeIf { it.isNotBlank() } ?: ""
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"$supabaseAnonKey\"")
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiKey\"")
     }
 
     buildTypes {
@@ -63,6 +74,16 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // Supabase + networking
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.auth)
+    implementation(libs.supabase.postgrest)
+    implementation(libs.supabase.storage)
+    implementation(libs.ktor.client.android)
+
+    // Gemini AI
+    implementation(libs.google.generativeai)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
