@@ -30,6 +30,9 @@ import com.kiranstore.manager.viewmodel.HomeViewModel
 fun HomeScreen(
     onAddUdhaar: () -> Unit,
     onAddRental: () -> Unit,
+    onNavigateToTasks: () -> Unit = {},
+    onNavigateToBuyList: () -> Unit = {},
+    onNavigateToSettings: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel(),
     customerViewModel: CustomerViewModel = hiltViewModel()
 ) {
@@ -71,7 +74,7 @@ fun HomeScreen(
                         Icon(Icons.Filled.Notifications, contentDescription = "Notifications",
                             tint = TextSecondary)
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = onNavigateToSettings) {
                         Icon(Icons.Filled.Settings, contentDescription = "Settings",
                             tint = TextSecondary)
                     }
@@ -185,7 +188,7 @@ fun HomeScreen(
                             sublabel = "नया काम जोड़ें",
                             isPrimary = false,
                             modifier = Modifier.weight(1f),
-                            onClick = {}
+                            onClick = onNavigateToTasks
                         )
                         QuickActionCard(
                             icon = Icons.Filled.ShoppingCart,
@@ -193,7 +196,7 @@ fun HomeScreen(
                             sublabel = "खरीद सूची में जोड़ें",
                             isPrimary = false,
                             modifier = Modifier.weight(1f),
-                            onClick = {}
+                            onClick = onNavigateToBuyList
                         )
                     }
                 }
