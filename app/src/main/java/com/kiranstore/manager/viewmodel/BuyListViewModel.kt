@@ -5,10 +5,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 
 data class BuyItem(
-    val id: Long = System.currentTimeMillis(),
+    val id: Long,
     val name: String,
     val quantity: String = "",
     val isBought: Boolean = false,
@@ -18,15 +19,15 @@ data class BuyItem(
 @HiltViewModel
 class BuyListViewModel @Inject constructor() : ViewModel() {
 
+    private val idCounter = AtomicLong(0)
+
     private val _items = MutableStateFlow<List<BuyItem>>(emptyList())
     val items: StateFlow<List<BuyItem>> = _items.asStateFlow()
-
-    val pendingCount: Int get() = _items.value.count { !it.isBought }
-    val boughtCount: Int get() = _items.value.count { it.isBought }
 
     fun addItem(name: String, quantity: String = "") {
         if (name.isBlank()) return
         _items.value = _items.value + BuyItem(
+            id = idCounter.incrementAndGet(),
             name = name.trim(),
             quantity = quantity.trim()
         )
