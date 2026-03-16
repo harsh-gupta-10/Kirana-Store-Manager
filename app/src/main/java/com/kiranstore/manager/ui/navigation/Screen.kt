@@ -5,6 +5,9 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Screen(val route: String) {
+    object Login : Screen("login")
+    object Signup : Screen("signup")
+    object ShopSetup : Screen("shop_setup")
     object Home : Screen("home")
     object Customers : Screen("customers")
     object AddCustomer : Screen("add_customer")

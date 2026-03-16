@@ -6,27 +6,40 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import com.kiranstore.manager.ui.screens.auth.LoginScreen
+import com.kiranstore.manager.ui.screens.auth.SignupScreen
 import com.kiranstore.manager.ui.screens.buylist.BuyListScreen
 import com.kiranstore.manager.ui.screens.customers.*
 import com.kiranstore.manager.ui.screens.home.HomeScreen
 import com.kiranstore.manager.ui.screens.rentals.*
 import com.kiranstore.manager.ui.screens.settings.SettingsScreen
+import com.kiranstore.manager.ui.screens.shop.ShopSetupScreen
 import com.kiranstore.manager.ui.screens.tasks.TasksScreen
 import com.kiranstore.manager.ui.screens.udhar.*
 import com.kiranstore.manager.ui.theme.*
+import com.kiranstore.manager.viewmodel.auth.AuthViewModel
+import com.kiranstore.manager.viewmodel.shop.ShopProfileViewModel
 
 @Composable
 fun AppNavGraph() {
     val navController = rememberNavController()
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStack?.destination?.route
+
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val authState by authViewModel.authState.collectAsState()
+
+    // Determine start destination based on auth state
+    val startDestination = if (authState.isLoggedIn) Screen.ShopSetup.route else Screen.Login.route
 
     // Determine if bottom bar should be shown
     val bottomBarRoutes = setOf(
@@ -35,7 +48,13 @@ fun AppNavGraph() {
         Screen.Rentals.route,
         Screen.Customers.route
     )
-    val showBottomBar = bottomBarRoutes.any { currentRoute?.startsWith(it) == true }
+    val noBottomBarRoutes = setOf(
+        Screen.Login.route,
+        Screen.Signup.route,
+        Screen.ShopSetup.route
+    )
+    val showBottomBar = bottomBarRoutes.any { currentRoute?.startsWith(it) == true } &&
+            noBottomBarRoutes.none { currentRoute == it }
 
     Scaffold(
         containerColor = BackgroundGrey,
@@ -82,8 +101,74 @@ fun AppNavGraph() {
         Box(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
             NavHost(
                 navController = navController,
-                startDestination = Screen.Home.route
+                startDestination = startDestination
             ) {
+                // ── Auth ──────────────────────────────────────────────────
+                composable(Screen.Login.route) {
+                    LoginScreen(
+                        authState = authState,
+                        onLogin = { email, password -> authViewModel.login(email, password) },
+                        onNavigateToSignup = {
+                            navController.navigate(Screen.Signup.route)
+                        },
+                        onClearError = { authViewModel.clearError() }
+                    )
+
+                    LaunchedEffect(authState.isLoggedIn) {
+                        if (authState.isLoggedIn) {
+                            navController.navigate(Screen.ShopSetup.route) {
+                                popUpTo(Screen.Login.route) { inclusive = true }
+                            }
+                        }
+                    }
+                }
+
+                composable(Screen.Signup.route) {
+                    SignupScreen(
+                        authState = authState,
+                        onSignup = { email, password -> authViewModel.signup(email, password) },
+                        onNavigateToLogin = {
+                            authViewModel.resetSignupSuccess()
+                            navController.popBackStack()
+                        },
+                        onClearError = { authViewModel.clearError() }
+                    )
+                }
+
+                // ── Shop Setup ────────────────────────────────────────────
+                composable(Screen.ShopSetup.route) {
+                    val shopViewModel: ShopProfileViewModel = hiltViewModel()
+                    val shopState by shopViewModel.state.collectAsState()
+                    val context = LocalContext.current
+
+                    LaunchedEffect(shopState.hasProfile) {
+                        if (shopState.hasProfile == true && shopState.shop != null) {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(Screen.ShopSetup.route) { inclusive = true }
+                            }
+                        }
+                    }
+
+                    LaunchedEffect(shopState.saveSuccess) {
+                        if (shopState.saveSuccess) {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(Screen.ShopSetup.route) { inclusive = true }
+                            }
+                        }
+                    }
+
+                    if (shopState.hasProfile == false || shopState.isLoading) {
+                        ShopSetupScreen(
+                            state = shopState,
+                            onSave = { shopName, ownerName, phone, address ->
+                                shopViewModel.saveShopProfile(shopName, ownerName, phone, address)
+                            },
+                            onUploadLogo = { uri -> shopViewModel.uploadLogo(context, uri) },
+                            onClearError = { shopViewModel.clearError() }
+                        )
+                    }
+                }
+
                 // ── Home ──────────────────────────────────────────────────
                 composable(Screen.Home.route) {
                     HomeScreen(
